@@ -6,6 +6,9 @@
     constructor() {
       this.el = document.createElement("li");
       this.el.classList.add("pressed");
+      this.el.addEventListener("click", () => {
+        this.check();
+      });
     }
 
     getEl() {
@@ -15,6 +18,17 @@
     activate(num) {
       this.el.classList.remove("pressed");
       this.el.textContent = num;
+    }
+
+    check() {
+      // parseInt()で数値に変換
+      if (currentNum === parseInt(this.el.textContent, 10)) {
+        this.el.classList.add("pressed");
+        currentNum++;
+        if (currentNum === 4) {
+          clearTimeout(timeoutId);
+        }
+      }
     }
   }
 
@@ -50,10 +64,28 @@
     }
   }
 
+  function runTimer() {
+    const timer = document.getElementById("timer");
+    //現在の時刻からSTARTボタンを押した時の時刻を引いてあげる。
+    //ミリ秒単位なので1000で割ってあげて、少数点以下2桁まで表示するためにtoFixed()を使う
+    timer.textContent = ((Date.now() - startTime) / 1000).toFixed(2);
+
+    //runTimerを10ミリ秒後に呼び出す
+    timeoutId = setTimeout(() => {
+      runTimer();
+    }, 10);
+  }
+
   const board = new Board();
+
+  let currentNum = 0;
+  let startTime;
+  let timeoutId;
 
   const button = document.getElementById("button");
   button.addEventListener("click", () => {
     board.activate();
+    startTime = Date.now();
+    runTimer();
   });
 }
