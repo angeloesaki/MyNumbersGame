@@ -78,13 +78,20 @@
 
   const board = new Board();
 
-  let currentNum = 0;
+  let currentNum;
   let startTime;
   let timeoutId;
 
   const button = document.getElementById("button");
   button.addEventListener("click", () => {
+    //タイマーが走っていたら
+    if (typeof timeoutId !== "undefined") {
+      clearTimeout(timeoutId);
+    }
+
+    currentNum = 0;
     board.activate();
+
     startTime = Date.now();
     runTimer();
   });
