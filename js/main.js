@@ -64,35 +64,45 @@
     }
   }
 
-  function runTimer() {
-    const timer = document.getElementById("timer");
-    //現在の時刻からSTARTボタンを押した時の時刻を引いてあげる。
-    //ミリ秒単位なので1000で割ってあげて、少数点以下2桁まで表示するためにtoFixed()を使う
-    timer.textContent = ((Date.now() - startTime) / 1000).toFixed(2);
+  class Game {
+    constructor() {
+      //thisはそのクラスのプロパティという意味
+      this.board = new Board();
 
-    //runTimerを10ミリ秒後に呼び出す
-    timeoutId = setTimeout(() => {
-      runTimer();
-    }, 10);
-  }
+      this.currentNum = undefined;
+      this.startTime = undefined;
+      this.timeoutId = undefined;
 
-  const board = new Board();
+      const button = document.getElementById("button");
+      button.addEventListener("click", () => {
+        //タイマーが走っていたら
+        this.start();
+      });
+    }
+    start() {
+      if (typeof this.timeoutId !== "undefined") {
+        clearTimeout(timeoutId);
+      }
 
-  let currentNum;
-  let startTime;
-  let timeoutId;
+      this.currentNum = 0;
+      this.board.activate();
 
-  const button = document.getElementById("button");
-  button.addEventListener("click", () => {
-    //タイマーが走っていたら
-    if (typeof timeoutId !== "undefined") {
-      clearTimeout(timeoutId);
+      this.startTime = Date.now();
+      this.runTimer();
     }
 
-    currentNum = 0;
-    board.activate();
+    runTimer() {
+      const timer = document.getElementById("timer");
+      //現在の時刻からSTARTボタンを押した時の時刻を引いてあげる。
+      //ミリ秒単位なので1000で割ってあげて、少数点以下2桁まで表示するためにtoFixed()を使う
+      timer.textContent = ((Date.now() - startTime) / 1000).toFixed(2);
 
-    startTime = Date.now();
-    runTimer();
-  });
+      //runTimerを10ミリ秒後に呼び出す
+      this.timeoutId = setTimeout(() => {
+        this.runTimer();
+      }, 10);
+    }
+  }
+
+  new Game();
 }
